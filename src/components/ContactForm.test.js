@@ -1,5 +1,5 @@
 import React from "react";
-import {render, screen} from "@testing-library/react";
+import {render, screen, act} from "@testing-library/react";
 import ContactForm from "./ContactForm";
 import userEvent from "@testing-library/user-event";
 
@@ -7,7 +7,7 @@ test("renders ContactForm without errors", () => {
   render(<ContactForm />);
 })
 
-test("user can fill out and submit the form", () => {
+test("user can fill out and submit the form", async() => {
   render(<ContactForm />);
 
   const firstNameInput = screen.getByLabelText(/first name/i);
@@ -20,6 +20,11 @@ test("user can fill out and submit the form", () => {
   userEvent.type(emailInput, "email@email.com");
   userEvent.type(messageInput, "This my message.");
 
-  
+  await act(async () =>{
+    const button = screen.getByRole("button",{name:/submit/i})
+     userEvent.click(button)
+    });
 
+  const firstName = screen.getByText(/Clare/i);
+  expect(firstName).toBeInTheDocument();
 })
